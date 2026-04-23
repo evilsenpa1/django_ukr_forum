@@ -114,7 +114,7 @@ class CustomUser(AbstractUser):
     first_name_public = models.BooleanField(default=False)
     last_name_public = models.BooleanField(default=False)
 
-    age = models.PositiveIntegerField(blank=True, null=True)
+    age = models.PositiveIntegerField(blank=True, null=True, verbose_name="Вік")
 
     phone_number = models.CharField(
         max_length=20, blank=True, null=True, verbose_name="Телефон"
