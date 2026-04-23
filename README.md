@@ -6,7 +6,7 @@
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)](https://redis.io/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![CI](https://github.com/evilsenpa1/django_ukr_forum/actions/workflows/django.yml/badge.svg)](https://github.com/evilsenpa1/django_ukr_forum/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 
 > 🇬🇧 English | [🇺🇦 Українська](#ukr-forum-1)
 
