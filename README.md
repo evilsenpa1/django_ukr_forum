@@ -1,10 +1,20 @@
 # Ukr-Forum
 
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![CI](https://github.com/evilsenpa1/django_ukr_forum/actions/workflows/django.yml/badge.svg)](https://github.com/evilsenpa1/django_ukr_forum/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 > 🇬🇧 English | [🇺🇦 Українська](#ukr-forum-1)
 
 A Ukrainian community platform combining a marketplace with geolocation search, user profiles with a referral tracking system, and a geographic location hierarchy. Created to help ukrainians.
 
 **Production:** [ukrkolo.site](https://ukrkolo.site)
+
+> _Migrated from a private repository — pre-migration commit history is not preserved. Active development continues in this repo going forward._
 
 ---
 
@@ -198,6 +208,8 @@ https://github.com/evilsenpa1
 Українська спільнотна платформа, що поєднує маркетплейс з пошуком за геолокацією, профілі користувачів із системою реферального відстеження та ієрархію географічних локацій. Створена, щоб допомагати українцям.
 
 **Production:** [ukrkolo.site](https://ukrkolo.site)
+
+> _Перенесено з приватного репозиторію — історія комітів до міграції не збережена. Подальша розробка ведеться тут._
 
 ---
 
