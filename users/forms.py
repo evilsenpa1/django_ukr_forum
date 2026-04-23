@@ -79,14 +79,20 @@ class CreationCustomUserForm(UserCreationForm):
                 user.region = region_obj
 
                 if city_name:
+                    def _to_float(val):
+                        try:
+                            return float(val)
+                        except (TypeError, ValueError):
+                            return None
+
                     city_obj, _ = City.objects.update_or_create(
                         region=region_obj,
                         name=city_name,
                         defaults={
                             'country': country_obj,
                             'city_id': city_api_id,
-                            'latitude': float(latitude) if latitude else None,
-                            'longitude': float(longitude) if longitude else None,
+                            'latitude': _to_float(latitude),
+                            'longitude': _to_float(longitude),
                         }
                     )
                     user.city = city_obj

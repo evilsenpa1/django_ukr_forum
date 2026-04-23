@@ -10,14 +10,21 @@
             {% csrf_token %}
 
             <table class='items-center'>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="px-3 text-xs text-gray-500 font-medium text-center">Приватне</th>
+                    </tr>
+                </thead>
                 <tr>
                     <td>
-                        {{ form.display_name.label_tag }} 
+                        {{ form.display_name.label_tag }}
                         {% if form.display_name.errors%}
                             <p class="text-red-600 text-sm mt-1">{{ form.display_name.errors }}</p>
                         {% endif %}
                     </td>
-                    <td>{{ form.display_name|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td>{{ form.display_name|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
                     <td class="px-3"></td>
                 </tr>
                 <tr>
@@ -27,36 +34,36 @@
                         <p class="text-red-600 text-sm mt-1">{{ form.username.errors }}</p>
                         {% endif %}
                     </td>
-                    <td>{{ form.username|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td>{{ form.username|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
                     <td class="px-3"></td>
                 </tr>
                 <tr class="">
                     <td>{{form.first_name.label_tag}}</td>
-                    <td>{{form.first_name|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
-                    <td class="px-3 align-middle">{{form.first_name_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним"}}</td>
+                    <td>{{form.first_name|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td class="px-3 align-middle">{{form.first_name_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших"}}</td>
                 </tr>
                 <tr>
                     <td>{{form.last_name.label_tag }}</td>
-                    <td>{{ form.last_name|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
-                    <td class="px-3">{{ form.last_name_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним"}}</td>
-                </tr>                
-                
+                    <td>{{ form.last_name|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td class="px-3">{{ form.last_name_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших"}}</td>
+                </tr>
+
                 <tr>
                     <td>{{form.age.label_tag}}</td>
-                    <td>{{form.age|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td>{{form.age|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
                     <td class="px-3"></td>
                 </tr>
 
                 <tr>
                     <td>{{form.email.label_tag}}</td>
-                    <td>{{form.email|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
-                    <td class="p-3">{{form.email_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним"}}</td>
+                    <td>{{form.email|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td class="p-3">{{form.email_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших"}}</td>
                 </tr>
 
                 <tr>
                     <td>{{form.phone_number.label_tag}}</td>
-                    <td>{{form.phone_number|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
-                    <td class="px-3">{{form.phone_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним"}}</td>
+                    <td>{{form.phone_number|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"}}</td>
+                    <td class="px-3">{{form.phone_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших"}}</td>
                 </tr>
                 <tr class="">
                     <td class="font-bold text-amber-800 py-5">Реферальний код:</td>
@@ -91,26 +98,26 @@
                 <table class="w-full">
                     <tr>
                         <td class="w-[35%]">{{ form.country.label_tag }}</td>
-                        <td>{{ form.country|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400" }}</td>
-                        <td>{{ form.country_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним" }}</td>
+                        <td>{{ form.country|add_class:"bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400" }}</td>
+                        <td>{{ form.country_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших" }}</td>
                     </tr>
                     <tr>
                         <td><label for="id_region">Регіон:</label></td>
                         <td>
-                            <select name="region" id="id_region" class="bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <select name="region" id="id_region" class="bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400">
                                 <option value="">Спочатку оберіть країну</option>
                             </select>
                         </td>
-                        <td>{{ form.region_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним" }}</td>
+                        <td>{{ form.region_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших" }}</td>
                     </tr>
                     <tr>
                         <td><label for="id_city">Місто:</label></td>
                         <td>
-                            <select name="city" id="id_city" class="bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400">
+                            <select name="city" id="id_city" class="bg-white border border-gray-300 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400">
                                 <option value="">Спочатку оберіть регіон</option>
                             </select>
                         </td>
-                        <td>{{ form.city_public|add_class:"w-6 h-6"|attr:"title:Зробити публічним" }}</td>
+                        <td>{{ form.city_public|add_class:"w-6 h-6"|attr:"title:Приховати від інших" }}</td>
                     </tr>
                 </table>
             </fieldset>
