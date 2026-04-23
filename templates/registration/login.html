@@ -1,0 +1,33 @@
+{% extends 'main_temp/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+{% if form.errors %}
+<p class="text-red-600 text-center mt-4">Невірний логін або пароль</p>
+{% endif %}
+
+<fieldset class="border-y p-8 mx-auto mt-8 max-w-125 shadow-xl">
+    <legend class="mx-5">Для входу в систему</legend>
+
+    {# nosemgrep: python.django.security.django-no-csrf-token.django-no-csrf-token #}
+    <form method="post" class="max-w-sm mx-auto bg-white p-6 rounded shadow-md space-y-4 mb-5">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="block text-gray-700 font-semibold mb-1"></label>
+            {{ form.username|add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400" |attr:"placeholder:Введіть логін" }}
+        </div>
+        <div>
+            <label for="{{ form.password.id_for_label }}" class="block text-gray-700 font-semibold mb-1"></label>
+
+            {{ form.password |add_class:"bg-amber-100 p-2 w-full mt-1 rounded focus:outline-none focus:ring-2 focus:ring-amber-400" |attr:"placeholder:Введіть пароль" }}
+        </div>
+
+        <button type="submit" class="bg-[#CEC526] md:w-full rounded mx-auto   p-2 text-bg-[#33332E] text-lg hover:bg-[#F2E70A]">
+            Увійти
+        </button>
+    </form>
+    
+</fieldset>
+
+{% endblock content %}

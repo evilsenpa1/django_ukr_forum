@@ -1,0 +1,116 @@
+{% extends "main_temp/base.html" %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/shop/shop_index.css' %}" />
+{% endblock styles %}
+
+{% block content %}
+
+<!-- 🔍 Поиск + фильтры -->
+{% include "shop_temp/search.html" %}
+
+<!-- Обёртка для изоляции стилей -->
+<div id="shop-content">
+
+  <!-- Категории -->
+  <div class="content-wrapper">
+    <div class="categories-section">
+      <div class="categories-header">
+        <h2>Розділи на сервісі</h2>
+      </div>
+
+      <div class="categories-divider"></div>
+
+      <div class="categories-body">
+        <section class="categories-container">
+          {% if Category %}
+          <div class="categories-grid">
+            {% for category in Category %}
+            <div class="category-card">
+              <a href="{% url 'shop:redirect_to_category' %}?category_id={{ category.id }}" class="category-link">
+                <div class="category-icon">
+                  {% if category.img %}
+                  <img src="{{ category.img }}" alt="{{ category.name }}">
+                  {% endif %}
+                </div>
+                <span class="category-name">{{ category.name }}</span>
+                <input type="hidden" name="category_id" value="{{ category.id }}" />
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="no-categories">
+            <p>
+              <span>Якщо тут немає розділів - використовуйте пошук на початку сторінки.</span>
+            </p>
+          </div>
+          {% endif %}
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Останні оголошення -->
+  <div class="content-wrapper">
+    <section class="products-section">
+      <h2 class="products-title">Останні оголошення</h2>
+
+      {% if Products %}
+      <div class="products-grid">
+        {% for product in Products %}
+        <a href="{% url 'shop:product' category_slug=product.category.slug pk=product.id product_slug=product.slug %}" class="product-link">
+          <div class="product-card">
+            {% if product.images %}
+            <img src="{{ product.images }}" class="product-image" alt="{{ product.name }}" />
+            {% else %}
+            <img src="https://via.placeholder.com/300x200" class="product-image" alt="Placeholder" />
+            {% endif %}
+
+            <div class="product-content">
+              <h3 class="product-name">{{ product.name }}</h3>
+              <p class="product-price">{{ product.price }} {{ product.country.currency_symbol|default:product.country.currency }}</p>
+              <p class="product-location">
+                {% if product.city %}
+                  {{ product.city.name }}{% if product.region %}, {{ product.region.name }}{% endif %}
+                {% elif product.region %}
+                  {{ product.region.name }}
+                {% else %}
+                  Адреса не вказана
+                {% endif %}
+                •
+                {% if product.date_update %}{{ product.date_update }}{% else %}{{ product.date }}{% endif %}
+              </p>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="no-products">
+        <span>Поки оголошень немає, ти можеш бути першим!</span>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'shop:create_product' %}" class="add-product-link">Додати свій товар</a>
+        {% endif %}
+      </p>
+      {% endif %}
+    </section>
+  </div>
+
+  <!-- Floating actions -->
+  <div class="floating-actions">
+    <div id="actionsMenu" class="actions-menu">
+      <a href="{% url "shop:my_products" %}" class="action-btn secondary">Мої товари</a>
+    </div>
+
+    <button id="toggleActions" class="action-btn toggle">Інші дії</button>
+
+    <a href="{% url 'shop:create_product' %}" class="action-btn primary">Додати свій товар</a>
+  </div>
+
+</div>
+
+<script src="{% static 'js/shop/shop_index.js' %}"></script>
+
+{% endblock content %}

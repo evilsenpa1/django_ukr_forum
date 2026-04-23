@@ -1,0 +1,20 @@
+<!-- Modal -->
+<div id="tagModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">Вибір тегів</h2>
+        <div class="max-h-64 overflow-y-auto">
+            {% for tag in tags %}
+            <label class="block mb-2">
+                <input type="checkbox" value="{{ tag.name_tags }}" class="px-3" />
+                {{ tag.name_tags }}
+            </label>
+            {% endfor %}
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button id="closeModal" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Закрити
+            </button>
+            <button id="saveTags" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Зберегти</button>
+        </div>
+    </div>
+</div>

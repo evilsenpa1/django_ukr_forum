@@ -1,0 +1,117 @@
+{% extends "main_temp/base.html" %} {% load static %} {% block content %}
+
+<fieldset class="border-y p-5 mx-auto my-8 shadow-xl max-w-137.5">
+    <legend class="mx-5 font-bold">{{user_detail_public.get_public_name}}</legend>
+    <div class="m-5 bg-white p-5 rounded shadow-md">
+        <table>
+            <tr>
+                <td>{{user_detail_public.verbose_names.first_name}}:</td>
+                <td class="px-5">
+                    {% if user_detail_public.get_public_first_name %} {{user_detail_public.first_name}} {% else %}
+                    <span>Приховано користувачем</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{user_detail_public.verbose_names.last_name}}:</td>
+                <td class="px-5">
+                    {% if user_detail_public.get_public_last_name %} {{user_detail_public.get_public_last_name}} {% else %}
+                    <span>Приховано користувачем</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="">{{user_detail_public.verbose_names.email}}:</td>
+                <td class="px-5">
+                    {% if user_detail_public.get_public_email %} {{user_detail_public.get_public_email}} {% else %}
+                    <span>Приховано користувачем</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{user_detail_public.verbose_names.phone_number}}:</td>
+                <td class="px-5">
+                    {% if user_detail_public.get_public_phone %} {{user_detail_public.get_public_phone}} {% else %}
+                    <span>Приховано користувачем</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{user_detail_public.verbose_names.social_network}}:</td>
+                <td class="px-5">
+                    {% if user_detail_public.get_public_social %} {{user_detail_public.get_public_social}} {% else %}
+                    <span>Приховано користувачем</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <fieldset class="border-y px-3 pb-3 mt-3 items-center space-y-3">
+            <legend class="mx-5">Локація</legend>
+            <table>
+                <tr>
+                    <td>{{user_detail_public.verbose_names.country}}:</td>
+                    <td class="px-5">
+                        {% if user_detail_public.get_public_country %} 
+                            <span class="text-lg">{{ user_detail_public.country.flag_emoji }}</span> 
+                            {{ user_detail_public.get_public_country }}
+                            {% if user_detail_public.country.currency_symbol %}
+                                <span class="text-gray-500">({{ user_detail_public.country.currency_symbol }})</span>
+                            {% endif %}
+                        {% else %}
+                            <span>Приховано користувачем</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{user_detail_public.verbose_names.region}}:</td>
+                    <td class="px-5">
+                        {% if user_detail_public.get_public_region %}
+                            {{ user_detail_public.get_public_region }}
+                        {% else %}
+                            <span>Приховано користувачем</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{user_detail_public.verbose_names.city}}:</td>
+                    <td class="px-5">
+                        {% if user_detail_public.get_public_city %}
+                            {{ user_detail_public.get_public_city }}
+                        {% else %}
+                            <span>Приховано користувачем</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            <div class="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-400">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div>latitude: {{ user_detail_public.city.latitude }}</div>
+                        <div>longitude: {{ user_detail_public.city.longitude }}</div>
+                    </div>
+                    {% if user_detail_public.city.latitude %}
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ user_detail_public.city.latitude|stringformat:'f' }},{{ user_detail_public.city.longitude|stringformat:'f' }}" 
+                    target="_blank" 
+                    class="text-blue-500 hover:text-blue-700 flex items-center gap-1 font-bold">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/>
+                        </svg>
+                        Відкрити карту
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="flex justify-between min-w-[350px] space-x-2 p-2 mt-3">
+            <a href="javascript:history.back()"
+               class="bg-[#CEC526] rounded p-2 text-[#33332E] text-lg hover:bg-[#F2E70A] transition-colors">
+                Повернутися
+            </a>
+        </div>
+    </div>
+</fieldset>
+
+{% endblock content %}

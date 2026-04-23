@@ -1,0 +1,71 @@
+{% extends "main_temp/base.html" %} 
+{% load static %} 
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    
+    <div class="text-center mb-10 relative">
+        <div class="bg-white p-6 md:p-3 rounded-3xl shadow-xl border border-gray-100 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 via-amber-400 to-yellow-300"></div>
+            <p class=" md:text-xl leading-relaxed text-gray-800 font-medium italic">
+                “Об’єднуємо українців у світі — щоб підтримати, знайти друзів і не втратити себе.”
+            </p>
+            <div class="text-center mt-2">
+                <a 
+                {% if user.is_authenticated %}
+                href="{% url 'main:rules' %}" 
+                {% endif %}                
+                class="inline-block bg-[#f0e6aa] text-[#33332E] px-4 py-2 rounded-full shadow-lg hover:bg-[#fdf88e] hover:scale-105 transition-all">
+                    Приєднуйтесь до нашої спільноти та допомагайте створювати безпечний простір для українців.
+                </a>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-[#2d3035]">
+        
+        <div class="group bg-orange-50 border border-orange-100 p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col border-l-8 border-l-orange-400">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">❤️</span>
+                <h3 class="font-bold text-xl text-orange-900">Українці живуть серцем</h3>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+                Ми вміємо працювати, мріяти, ділитися теплом і не втрачати світло навіть у темні часи. У цьому — наша сила і натхнення жити далі.
+            </p>
+        </div>
+
+        <div class="group bg-blue-50 border border-blue-100 p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col border-l-8 border-l-blue-400">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">🏠</span>
+                <h3 class="font-bold text-xl text-blue-900">Родина — серце дому</h3>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+                У кожній хаті родина — це головна цінність. Тут завжди є місце для тепла, сміху й спільного хліба на столі.
+            </p>
+        </div>
+
+        <div class="group bg-yellow-50 border border-yellow-100 p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col border-l-8 border-l-yellow-400">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">🌾</span>
+                <h3 class="font-bold text-xl text-yellow-900">Сонце на пшениці</h3>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+                Безкраї золоті поля — це не лише символ хліба, а й праці, терпіння й спокою. Коли вітер колише колосся, здається, що земля дихає разом із тобою.
+            </p>
+        </div>
+
+        <div class="group bg-indigo-50 border border-indigo-100 p-6 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col border-l-8 border-l-indigo-400">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">✨</span>
+                <h3 class="font-bold text-xl text-indigo-900">Місто світла</h3>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+                Там, де кожен вечір — як нова історія, а вогні надихають на мрії. Місто, що ніколи не втомлюється вірити в краще майбутнє.
+            </p>
+        </div>
+    </div>
+
+    
+</div>
+{% endblock content %}

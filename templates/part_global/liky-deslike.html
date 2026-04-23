@@ -1,0 +1,40 @@
+{% load static %}
+{% load reactions_tags %} {# content_type_id #}
+
+<div
+    class="reaction flex items-center justify-between mx-2"
+    data-object-id="{{ obj.id }}"
+    data-content-type="{{ obj|content_type_id }}"
+>
+    <!-- 👍 LIKE -->
+    <div class="flex items-center">
+        <span class="px-2 like-count text-sm">{{ obj.likes_count }}</span>
+
+        <button
+            type="button"
+            class="reaction-btn rounded shrink-0 hover:bg-[#ccc206] transition"
+            data-reaction="like"
+            aria-label="Like"
+        >
+            <img class="p-2 w-8" src="{% static 'favicon/like.png' %}" alt="Like" />
+        </button>
+    </div>
+
+    <span class="mx-3 text-gray-400">|</span>
+
+    <!-- 👎 DISLIKE -->
+    <div class="flex items-center">
+        <button
+            type="button"
+            class="reaction-btn rounded shrink-0 hover:bg-red-400 transition"
+            data-reaction="dislike"
+            aria-label="Dislike"
+        >
+            <img class="p-2 w-8" src="{% static 'favicon/dislike.png' %}" alt="Dislike" />
+        </button>
+
+        <span class="px-2 dislike-count text-sm">{{ obj.dislikes_count }}</span>
+    </div>
+</div>
+
+<script src="{% static 'js/core/reaction_liky_dislike.js' %}"></script>

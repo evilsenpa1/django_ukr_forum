@@ -1,0 +1,66 @@
+{% extends "main_temp/base.html" %} 
+
+{% block content %}
+<div class="max-w-4xl mx-auto my-12 px-4">
+    <div class="bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+        
+        <div class="h-3 bg-gradient-to-r from-blue-500 to-yellow-400"></div>
+
+        <div class="p-8 md:p-12">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 flex items-center gap-3">
+                <span class="text-4xl">🇺🇦</span> 
+                Про проект: <span class="text-amber-600">Коло Українців</span>
+            </h1>
+
+            <p class="text-xl text-gray-500 italic mb-10 leading-relaxed border-l-4 border-amber-500 pl-4">
+                "Об'єднуємо своїх, де б ви не були."
+            </p>
+
+            <div class="grid gap-8 md:grid-cols-2 mt-8">
+                
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-2xl">
+                        🌱
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-1">Волонтерська ініціатива</h4>
+                        <p class="text-gray-600 text-sm">Проект створений командою ентузіастів на безоплатній основі для допомоги кожному українцю.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">
+                        🤝
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-1">Наша мета</h4>
+                        <p class="text-gray-600 text-sm">Знайти один одного, обмінятися досвідом та підтримати своїх у складні часи, де б ви не знаходилися.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 md:col-span-2 bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                    <div class="flex-shrink-0 w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-sm border border-amber-200">
+                        🗣️
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-amber-900 mb-1 text-lg">Територія української мови</h4>
+                        <p class="text-amber-800 leading-relaxed">
+                            Ми віримо, що мова — це наш спільний дім. Ми плекаємо рідне слово, щоб зберігати нашу ідентичність, спосіб мислення та культурну сутність.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-100 text-center">
+                <p class="text-gray-500 text-sm mb-6">
+                    Разом ми — велика сила. Дякуємо, що ви з нами!
+                </p>
+                <a href="{% url 'main:rules' %}" class="inline-flex items-center text-amber-600 font-semibold hover:text-amber-700 transition">
+                    Ознайомитися з правилами спільноти 
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

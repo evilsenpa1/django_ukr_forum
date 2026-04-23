@@ -1,0 +1,208 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/shop/search.css' %}" />
+
+<!-- Обертка с уникальным ID -->
+<div id="search-section">
+  <header class="container">
+    <div class="wrapper">
+      
+      <form method="get" action="{% url 'shop:search' %}" class="form">
+
+        <!-- Поле поиска -->
+        <div class="input-group">
+          <div class="icon-left">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          
+          <input
+            type="text"
+            name="q"
+            value="{{ request.GET.q|default:'' }}"
+            placeholder="Знайдіть те, що шукаєте..."
+            class="main-input"
+          />
+          
+          <button type="submit" class="submit-btn">
+            <span>Пошук</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters">
+          
+          <!-- Заголовок -->
+          <div class="filters-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+            <h3>Фільтри пошуку</h3>
+          </div>
+
+          <!-- Поля локации -->
+          <div class="fields-row">
+
+            <!-- Категория -->
+            <div class="field">
+              <label>Категорія</label>
+              <div class="select-box">
+                <select name="category_id" id="category-select">
+                  <option value="">Всі категорії</option>
+                  {% for category in Category %}
+                  <option value="{{ category.id }}" {% if request.GET.category_id == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+                <div class="arrow">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Страна -->
+            <div class="field">
+              <label>Країна</label>
+              <div class="input-box">
+                <div class="icon-left">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <input
+                  id="country-input"
+                  name="country_name"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Оберіть країну..."
+                  value="{{ request.GET.country_name|default:''|escape }}"
+                  class="text-input has-icon"
+                />
+                <input type="hidden" id="country-id" name="country_id" value="{{ request.GET.country_id|default:''|escape }}" />
+                <ul id="country-list" class="dropdown hidden"></ul>
+              </div>
+            </div>
+
+            <!-- Регион -->
+            <div class="field">
+              <label>Регіон</label>
+              <button id="region-toggle" type="button" class="toggle-btn">
+                <span id="region-label">{{ request.GET.region_name|default:'' }}</span>
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.354a.75.75 0 111.14.98l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                </svg>
+              </button>
+              <input type="hidden" id="region-id" name="region_id" value="{{ request.GET.region_id|default:'' }}" />
+              <input type="hidden" id="region-name" name="region_name" value="{{ request.GET.region_name|default:''|escape }}" />
+              <ul id="region-list" class="dropdown hidden"></ul>
+            </div>
+
+            <!-- Город -->
+            <div class="field">
+              <label>Місто</label>
+              <div class="input-box">
+                <div class="icon-left">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </div>
+                <input
+                  id="city-input"
+                  name="city_name"
+                  type="text"
+                  value="{{ request.GET.city_name|default:''|escape }}"
+                  autocomplete="off"
+                  placeholder="Оберіть місто..."
+                  class="text-input has-icon"
+                />
+                <input type="hidden" id="city-id" name="city_id" value="{{ request.GET.city_id|default:'' }}" />
+                <ul id="city-list" class="dropdown hidden"></ul>
+              </div>
+            </div>
+
+            <!-- Радиус -->
+            {% if request.user.is_authenticated %}
+            <div class="field field-small">
+              <label>Радіус</label>
+              <div class="select-box">
+                <select id="radius-select" name="radius">
+                  <option value="">Виберіть...</option>
+                  {% for r in RADII %}
+                  <option value="{{ r }}" {% if request.GET.radius == r|stringformat:"s" %}selected{% endif %}>+{{ r }} км</option>
+                  {% endfor %}
+                </select>
+                <div class="arrow">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+          </div>
+
+          <!-- Радио-фильтры -->
+          <div class="radio-row">
+
+            <!-- Сортировка -->
+            <div class="radio-group">
+              <div class="group-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+                </svg>
+                <span>Сортування:</span>
+              </div>
+
+              <label class="radio-item">
+                <input type="radio" name="date_sort" value="date" {% if not request.GET.date_sort or request.GET.date_sort == "date" %}checked{% endif %} />
+                <span>Спочатку нові</span>
+              </label>
+
+              <label class="radio-item">
+                <input type="radio" name="date_sort" value="-date" {% if request.GET.date_sort == "-date" %}checked{% endif %} />
+                <span>Спочатку старі</span>
+              </label>
+            </div>
+
+            <!-- Состояние -->
+            <div class="radio-group">
+              <div class="group-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>Стан:</span>
+              </div>
+
+              <label class="radio-item">
+                <input type="radio" name="status" value="" {% if not request.GET.status %}checked{% endif %} />
+                <span>Усі</span>
+              </label>
+
+              <label class="radio-item">
+                <input type="radio" name="status" value="new" {% if request.GET.status == "new" %}checked{% endif %} />
+                <span>Нові</span>
+              </label>
+
+              <label class="radio-item">
+                <input type="radio" name="status" value="used" {% if request.GET.status == "used" %}checked{% endif %} />
+                <span>Вживані</span>
+              </label>
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+      
+    </div>
+  </header>
+</div>
+
+<script src="{% static 'js/shop/search.js' %}"></script>

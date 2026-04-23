@@ -1,0 +1,9 @@
+{% extends 'main_temp/base.html' %}
+
+{% block content %}
+    {% if form.errors %}
+        <p style="color:red;">Помилка</p>
+    {% endif %}
+
+    <p><a href="{% url 'users:logout' %}">logout</a></p>
+{% endblock content %}

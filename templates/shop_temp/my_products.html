@@ -1,0 +1,183 @@
+{% extends "main_temp/base.html" %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/shop/shop_my_products.css' %}" />
+{% endblock styles %}
+
+{% block content %}
+
+<!-- Список моих товаров -->
+<main class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
+  
+  <div class="grid grid-cols-1 gap-4 sm:gap-6">
+    {% if products %}
+      {% for product in products %}
+      <article class="product-card">
+
+        <!-- Изображение -->
+        <div class="product-image-container">
+          {% if product.images.all.count > 0 %}
+            <a href="{% url "shop:product" category_slug=product.category.slug pk=product.id product_slug=product.slug %}" 
+               class="block w-full h-full">
+              <img src="{{ product.images.first.image.url }}" 
+                   class="w-full h-full object-cover" 
+                   alt="{{ product.name }}">
+            </a>
+          {% else %}
+            <img src="https://via.placeholder.com/200x200?text=Фото" 
+                 class="w-full h-full object-cover" 
+                 alt="Товар">
+          {% endif %}
+        </div>
+
+        <!-- Контент -->
+        <div class="product-content">
+
+          <!-- Левая колонка: информация -->
+          <div class="product-info">
+            <div>
+              <h3 class="product-title">
+                <a href="{% url "shop:product" category_slug=product.category.slug pk=product.id product_slug=product.slug %}">
+                  {{ product.name }}
+                </a>
+              </h3>
+
+              <span class="status-badge">
+                {{ product.get_status_display }}
+              </span>
+
+              <p class="product-location">
+                {% if product.city and product.country %}
+                  <span class="inline-flex items-center">
+                    <svg class="icon-location" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                    </svg>
+                    {{ product.city.name }}, {{ product.region.name }}
+                  </span>
+                {% else %}
+                  Адреса не вказана
+                {% endif %}
+                <span>
+                  •
+                  {% if product.date_update %}
+                    {{ product.date_update|date:"d.m.Y" }}
+                  {% else %}
+                    {{ product.date|date:"d.m.Y" }}
+                  {% endif %}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Правая колонка: цена + кнопки -->
+          <div class="product-actions">
+
+            <p class="product-price">
+              {{ product.price }} <span class="currency">{{ product.country.currency_symbol|default:product.country.currency }}</span>
+            </p>
+
+            <!-- Кнопки -->
+            <div class="action-buttons">
+              <a href="{% url 'shop:update_product' pk=product.id product_slug=product.slug %}"
+                 class="btn-action btn-edit">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                <span class="hidden sm:inline">Редагувати</span>
+                <span class="sm:hidden">Ред.</span>
+              </a>
+
+              <a href="{% url 'shop:delete_product' pk=product.id product_slug=product.slug %}"
+                 class="btn-action btn-delete">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                <span class="hidden sm:inline">Видалити</span>
+                <span class="sm:hidden">Вид.</span>
+              </a>
+
+              <button type="button" class="btn-action btn-in-process">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="hidden sm:inline">У процесі</span>
+                <span class="sm:hidden">Проц.</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </article>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+        <p class="empty-state-title">У вас поки немає товарів</p>
+        <p class="empty-state-description">Додайте перший товар для продажу</p>
+      </div>
+    {% endif %}
+
+  </div>
+</main>
+
+<!-- Пагинация -->
+<nav aria-label="Page navigation" class="pagination-nav">
+  <ul class="pagination-list">
+
+    <!-- Предыдущая -->
+    {% if page_obj.has_previous %}
+      <li>
+        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">
+          <span class="hidden sm:inline">&laquo; Попередня</span>
+          <span class="sm:hidden">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <span class="pagination-disabled">
+          <span class="hidden sm:inline">&laquo; Попередня</span>
+          <span class="sm:hidden">&laquo;</span>
+        </span>
+      </li>
+    {% endif %}
+
+    <!-- Номера страниц -->
+    {% for num in paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li>
+          <span class="pagination-active">{{ num }}</span>
+        </li>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+        <li>
+          <a href="?page={{ num }}" class="pagination-number">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Следующая -->
+    {% if page_obj.has_next %}
+      <li>
+        <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">
+          <span class="hidden sm:inline">Наступна &raquo;</span>
+          <span class="sm:hidden">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <span class="pagination-disabled">
+          <span class="hidden sm:inline">Наступна &raquo;</span>
+          <span class="sm:hidden">&raquo;</span>
+        </span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
+
+
+<script src="{% static 'js/shop/shop_index.js' %}"></script>
+{% endblock content %}

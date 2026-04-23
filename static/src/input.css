@@ -1,0 +1,129 @@
+/* 1. @import Google Fonts — ОБОВ'ЯЗКОВО ПЕРШИМ, ПЕРЕД Tailwind! 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');*/
+
+/* Onest — український шрифт, дуже популярний у 2025 */
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap');
+
+/* 2. Тепер імпорт Tailwind */
+@import "tailwindcss";
+
+/* Явно указать где искать классы */
+@source "../../templates/**/*.html";
+@source "../**/templates/**/*.html";
+
+/* 3. @theme — тільки змінні, без @import */
+@theme {
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ТУТ — кастомний шрифт Inter як глобальний 
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;*/
+  --font-sans: 'Onest', sans-serif;
+
+  --color-ukraine-blue: #005BBB;
+  --color-ukraine-yellow: #FFD500;
+
+
+  --backgroundImage: {
+        // Додаємо новий клас 'bg-hero-pattern'
+        // Вкажіть шлях до вашого зображення відносно CSS файлів
+        'hero-pattern': "url('../images/main/my_region.jpg')", 
+        'footer-texture': "url('/img/footer-texture.png')",
+      }
+}
+
+/* ← ОБОВ’ЯЗКОВО! Усе кастомне CSS тут! ← */
+@layer components {
+  .btn-crack {
+    position: relative;
+    /* Потрібно для того, щоб ::before був відносно кнопки */
+    /*display: inline-block;            Щоб кнопка не розтягувалась на всю ширину, а була розміру контенту + падінгів */
+    padding: 12px 32px;
+    /* Внутрішні відступи: зверху/знизу 12px, зліва/справа 32px */
+    /* background: #f59e0b;             Колір фону — amber-500 (яскраво-помаранчевий) */
+    /* border-radius: 9999px;           Робить кнопку повністю круглою (таблетка) */
+    cursor: pointer;
+    /* При наведенні курсор стає "рука" */
+    /*overflow: hidden;               Важливо! Ховає все, що вилазить за межі кнопки (наприклад, тріщини під час анімації) */
+    transition: all 0.3s ease;
+    /* Плавна зміна всіх властивостей (колір, масштаб тощо) за 0.3 секунди */
+    /*box-shadow: 0 4px 15px rgba(0,0,0,0.2);   Тінь під кнопкою — виглядає "піднятою" */
+    user-select: none;
+    /* Забороняє виділяти текст на кнопці (щоб не було синього виділення при кліку) */
+  }
+
+  /* При наведенні миші — колір стає темнішим */
+  .btn-crack:hover {
+    /* background: #d97706;              amber-600 — трохи темніший помаранчевий */
+  }
+
+  /* Коли кнопку тримають натиснутою (миша натиснута і не відпущена) */
+  .btn-crack:active {
+    transform: scale(0.94);
+    /* Кнопка трохи "втискається" — ефект натискання */
+  }
+
+  /* Псевдоелемент ::before — саме тут малюються тріщини */
+  .btn-crack:active::before {
+    content: "";
+    /* Обов’язково — створює "порожній" елемент */
+    position: absolute;
+    /* Розміщуємо поверх кнопки */
+    inset: 0;
+    /* Скорочення для top:0; left:0; right:0; bottom:0; — займає всю кнопку */
+    pointer-events: none;
+    /* Тріщини не заважають клікати кнопку */
+
+    /* Тут 4 маленькі білі кола в різних місцях — створюють ефект тріщин */
+    background:
+      radial-gradient(circle at 20% 30%, transparent 30%, rgba(0, 0, 0, 0.8) 32%, transparent 35%),
+      radial-gradient(circle at 80% 70%, transparent 30%, rgba(0, 0, 0, 0.7) 32%, transparent 35%),
+      radial-gradient(circle at 50% 50%, transparent 25%, rgba(0, 0, 0, 0.9) 27%, transparent 30%),
+      radial-gradient(circle at 40% 80%, transparent 35%, rgba(0, 0, 0, 0.6) 37%, transparent 40%);
+
+    opacity: 0;
+    /* Спочатку невидимо */
+    animation: crack 0.7s ease-out forwards;
+    /* Запускаємо анімацію під назвою "crack" */
+  }
+
+  /* Спочатку ховаємо переклад */
+  .translation {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  /* Коли чекбокс активний — показуємо */
+  #show-trans:checked ~ label .translation {
+    opacity: 1;
+    max-height: 100px; /* достатньо для тексту */
+  }
+
+}
+
+/* Анімація появи і зникнення тріщин */
+@keyframes crack {
+  0% {
+    opacity: 0;
+    /* На старті — повністю прозоро */
+    transform: scale(0.3);
+    /* Дуже маленьке */
+  }
+
+  40% {
+    opacity: 1;
+    /* Повністю видно */
+  }
+
+  100% {
+    opacity: 0;
+    /* Знову зникає */
+    transform: scale(2.8);
+    /* Розтягується і зникає далеко */
+  }
+}

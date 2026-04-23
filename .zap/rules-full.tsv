@@ -1,0 +1,49 @@
+# ZAP Full Scan Rules — Scheduled (Nightly/Weekly)
+# Используется только в scheduled.yml (action-full-scan)
+# Строже, чем .zap/rules.tsv для PR-baseline:
+# - Медленные SQL-инжекции включены (времени достаточно)
+# - HSTS и CSP переведены из WARN в FAIL
+# - Sec-Fetch заголовки по-прежнему игнорируем (ложные срабатывания)
+
+# Informational — отключаем как и в baseline
+10015	IGNORE	(Re-examine Cache-control Directives)
+10017	IGNORE	(Cross-Domain JavaScript Source File Inclusion)
+10019	IGNORE	(Content-Type Header Missing)
+10021	IGNORE	(X-Content-Type-Options Header Missing)
+10027	IGNORE	(Information Disclosure - Suspicious Comments)
+10032	IGNORE	(Viewstate)
+10063	IGNORE	(Feature Policy Header Not Set)
+10094	IGNORE	(Base64 Disclosure)
+10096	IGNORE	(Timestamp Disclosure)
+10109	IGNORE	(Modern Web Application)
+90004	IGNORE	(Cross-Origin-Embedder-Policy Header Missing or Invalid)
+
+# В полном скане HSTS и CSP — FAIL, не WARN
+# (на проде они обязаны быть настроены)
+10020	FAIL	(X-Frame-Options Header Not Set)
+10035	FAIL	(Strict-Transport-Security Header Not Set)
+10038	FAIL	(Content Security Policy (CSP) Header Not Set)
+
+# CSP Wildcard Directive (img-src https:) — намеренно принятый риск:
+# https: в img-src нужен для внешних изображений; все скрипты/стили строго ограничены 'self'
+10055	IGNORE	(CSP: Wildcard Directive)
+
+# Медленные SQL-проверки — включаем, у ночного скана времени достаточно
+# 40018 и 40019 намеренно НЕ указаны → дефолтное поведение (WARN/FAIL)
+
+# Sec-Fetch — ложные срабатывания при сканировании без браузера
+90005	IGNORE	(Sec-Fetch-Dest Header is Missing)
+90005	IGNORE	(Sec-Fetch-Mode Header is Missing)
+90005	IGNORE	(Sec-Fetch-Site Header is Missing)
+90005	IGNORE	(Sec-Fetch-User Header is Missing)
+
+# Активные проверки — все включены по умолчанию:
+# 40012 (SQL Injection)
+# 40014 (XSS Persistent)
+# 40016 (XSS Reflected)
+# 40017 (Source Code Disclosure)
+# 90019 (Server Side Code Injection)
+# 90020 (Remote OS Command Injection)
+# 90021 (XPath Injection)
+# 90022 (Application Error Disclosure)
+# 90023 (XML External Entity)

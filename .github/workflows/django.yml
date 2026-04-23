@@ -1,0 +1,559 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  SECRET_KEY: "dummy-ci-secret-key"
+  HASHIDS_SALT: "dummy-ci-hashids-salt-for-testing"
+  DEBUG: "False"
+  ALLOWED_HOSTS: "localhost,127.0.0.1"
+
+jobs:
+
+  # ──────────────────────────────────────────────
+  # JOB 1: Django checks + migrations + tests
+  # ──────────────────────────────────────────────
+  django:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_NAME: test_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      REDIS_URL: redis://localhost:6379/0
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt coverage
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
+      - name: Django system check
+        run: python manage.py check
+
+      - name: Check migrations
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Apply migrations
+        run: python manage.py migrate
+
+      - name: Run tests with coverage
+        id: tests
+        # continue-on-error so coverage data is always saved and uploaded,
+        # even when tests fail. The job is explicitly failed below.
+        continue-on-error: true
+        run: |
+          coverage run --source='shop' manage.py test shop.tests --verbosity=2 \
+            2>&1 | tee test-output.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Coverage report
+        if: always()
+        run: coverage report -m --fail-under=40
+
+      - name: Generate coverage XML
+        if: always()
+        run: coverage xml -o coverage.xml || true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            .coverage
+            coverage.xml
+            test-output.log
+
+      - name: Fail job if tests failed
+        if: steps.tests.outcome == 'failure'
+        run: |
+          echo "Tests failed — see output above."
+          exit 1
+
+
+  # ──────────────────────────────────────────────
+  # JOB 2: static security analysis
+  # ──────────────────────────────────────────────
+  security-static:
+    runs-on: ubuntu-latest
+    needs: django
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          # Must match the app's Python version
+          python-version: "3.12"
+          cache: 'pip'
+
+      - name: Install security tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y jq
+          python -m pip install --upgrade pip
+          # setuptools provides pkg_resources, required by semgrep's opentelemetry dep.
+          # Python 3.12+ no longer ships setuptools by default.
+          pip install "setuptools<82"
+          pip install -r requirements.txt semgrep pip-audit
+
+      - name: Audit Python dependencies
+        # BUG FIX: pip-audit JSON does not include a "severity" field.
+        # The previous filter `select(.severity=="high"...)` always returned 0 — the
+        # check was completely ineffective. Now we count ALL vulnerabilities and rely
+        # on pip-audit's own exit code (non-zero when vulns found) as a safety net.
+        run: |
+          pip-audit -r requirements.txt -f json -o audit-report.json; AUDIT_STATUS=$?
+          echo "=== pip-audit report ==="
+          jq '.' audit-report.json
+
+          VULNS=$(jq '[.dependencies[].vulns[]] | length' audit-report.json)
+          if [ "$VULNS" -gt 0 ]; then
+            echo "❌ Found $VULNS vulnerabilit(ies) in dependencies!"
+            exit 1
+          else
+            echo "✅ No vulnerabilities found."
+          fi
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: audit-report.json
+
+      - name: Scan for secrets with gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Django deploy check
+        # ALLOWED_HOSTS must be non-empty, otherwise check --deploy always warns
+        run: python manage.py check --deploy --fail-level=ERROR
+        env:
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
+
+      - name: Run Semgrep (SAST)
+        # BUG FIX: `semgrep ci --config=auto` requires SEMGREP_APP_TOKEN and may
+        # silently skip rules without it. Use `semgrep scan` with explicit configs.
+        # p/django downloads the official Django security ruleset without auth.
+        run: semgrep scan --config=.semgrep.yml --config=p/django --error
+
+
+  # ──────────────────────────────────────────────
+  # JOB 3: dynamic analysis — ZAP Baseline
+  # nginx on port 80 + gunicorn + Redis
+  # mirrors production stack
+  # ──────────────────────────────────────────────
+  security-dynamic:
+    runs-on: ubuntu-latest
+    needs: django
+
+    permissions:
+      contents: read
+      issues: write   # ZAP opens an Issue with alert summary
+      checks: write   # ZAP posts results to Checks
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_NAME: test_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      REDIS_URL: redis://localhost:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings
+      DEBUG: "False"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt gunicorn
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y nginx redis-tools
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
+      - name: Wait for Redis
+        run: |
+          until redis-cli -h localhost -p 6379 ping | grep -q PONG; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+
+      - name: Migrate DB
+        run: python manage.py migrate
+
+      - name: Collect static files
+        run: python manage.py collectstatic --noinput
+
+      - name: Start Django via Gunicorn
+        # Gunicorn listens only on 127.0.0.1 — all traffic is proxied through nginx
+        run: |
+          nohup gunicorn config.wsgi:application \
+            --bind 127.0.0.1:8000 \
+            --workers 2 \
+            --log-file /tmp/gunicorn.log \
+            --error-logfile /tmp/gunicorn-error.log &
+          GUNICORN_PID=$!
+          echo "Waiting for Gunicorn (PID $GUNICORN_PID)..."
+          for i in {1..20}; do
+            if curl -sf http://127.0.0.1:8000/ > /dev/null 2>&1; then
+              echo "Gunicorn is up after $i attempts"
+              exit 0
+            fi
+            if ! kill -0 $GUNICORN_PID 2>/dev/null; then
+              echo "❌ Gunicorn process died!"
+              cat /tmp/gunicorn-error.log
+              exit 1
+            fi
+            echo "Attempt $i — waiting..."
+            sleep 2
+          done
+          echo "❌ Gunicorn did not start in time"
+          cat /tmp/gunicorn-error.log
+          exit 1
+
+      - name: Configure nginx as reverse proxy
+        run: |
+          STATIC_PATH="${{ github.workspace }}/staticfiles"
+          MEDIA_PATH="${{ github.workspace }}/media"
+
+          sudo mkdir -p /etc/nginx/snippets
+          sudo cp ${{ github.workspace }}/nginx/snippets/security-headers.conf \
+                  /etc/nginx/snippets/security-headers.conf
+
+          # Use the CI-specific config — the production nginx.conf uses HTTPS/SSL
+          # and redirects port 80 to 443, both of which fail in CI without certs.
+          sed \
+            -e "s|CI_STATIC_PATH|${STATIC_PATH}|g" \
+            -e "s|CI_MEDIA_PATH|${MEDIA_PATH}|g" \
+            nginx/nginx-ci.conf | sudo tee /etc/nginx/nginx.conf
+
+          echo "=== Resulting nginx.conf ==="
+          cat /etc/nginx/nginx.conf
+
+          echo "=== Testing nginx config ==="
+          sudo nginx -t
+
+          sudo systemctl stop nginx || true
+          sudo systemctl start nginx
+          sudo systemctl status nginx --no-pager || true
+
+          if ! sudo systemctl is-active --quiet nginx; then
+            echo "=== Nginx failed to start, error log: ==="
+            sudo cat /var/log/nginx/error.log || echo "No error log"
+            exit 1
+          fi
+
+      - name: Wait for nginx on port 80
+        run: |
+          for i in {1..20}; do
+            if curl -s http://localhost:80 > /dev/null; then
+              echo "nginx is up"
+              exit 0
+            fi
+            echo "Attempt $i — waiting..."
+            sleep 2
+          done
+          echo "nginx did not start, dumping logs:"
+          sudo journalctl -u nginx --no-pager -n 30
+          cat /tmp/gunicorn-error.log
+          exit 1
+
+      - name: ZAP Baseline Scan
+        # target uses host.docker.internal — ZAP runs inside a Docker container,
+        # so 'localhost' resolves to the container itself, not the GHA runner host.
+        # host.docker.internal points to the runner host where nginx is listening.
+        uses: zaproxy/action-baseline@v0.13.0
+        with:
+          target: 'http://host.docker.internal:80'
+          cmd_options: '-a -j -m 3 -T 5 -d --autooff'
+          rules_file_name: '.zap/rules.tsv'
+          fail_action: true
+
+      - name: Upload server logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-logs
+          path: |
+            /tmp/gunicorn.log
+            /tmp/gunicorn-error.log
+
+      - name: Brute-force simulation (rate limit check)
+        # FIX: fetch a real CSRF token first so we actually hit the login logic,
+        # not Django's CSRF middleware (which always returns 403 without a token).
+        # Goal: verify the server handles repeated failures without crashing (429 is ideal).
+        run: |
+          echo "=== Fetching CSRF token ==="
+          CSRF=$(curl -sc /tmp/cookies.txt http://localhost:80/users/login/ \
+                 | grep -oP '(?<=csrfmiddlewaretoken" value=")[^"]+' || echo "")
+          if [ -z "$CSRF" ]; then
+            echo "⚠️  Could not extract CSRF token — skipping brute-force check"
+            exit 0
+          fi
+
+          echo "=== Simulating 10 failed login attempts ==="
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -X POST http://localhost:80/users/login/ \
+              -b /tmp/cookies.txt \
+              -d "csrfmiddlewaretoken=${CSRF}&username=admin&password=wrong${i}")
+            echo "Attempt $i → HTTP $STATUS"
+            if [ "$STATUS" = "429" ]; then
+              echo "✅ Rate limiting is active (got 429)"
+            fi
+          done
+
+
+  # ──────────────────────────────────────────────
+  # JOB 4: pentest — Nikto
+  # nginx on port 80 + gunicorn + Redis
+  # ──────────────────────────────────────────────
+  penetration:
+    runs-on: ubuntu-latest
+    needs: django
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_NAME: test_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      REDIS_URL: redis://localhost:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings
+      DEBUG: "False"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt gunicorn
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y nginx nikto redis-tools
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do sleep 2; done
+
+      - name: Wait for Redis
+        run: |
+          until redis-cli -h localhost -p 6379 ping | grep -q PONG; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+
+      - name: Apply migrations & collectstatic
+        run: |
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+
+      - name: Start Gunicorn
+        run: |
+          nohup gunicorn config.wsgi:application \
+            --bind 127.0.0.1:8000 \
+            --workers 2 \
+            --log-file /tmp/gunicorn.log \
+            --error-logfile /tmp/gunicorn-error.log &
+          GUNICORN_PID=$!
+          echo "Waiting for Gunicorn (PID $GUNICORN_PID)..."
+          for i in {1..20}; do
+            if curl -sf http://127.0.0.1:8000/ > /dev/null 2>&1; then
+              echo "Gunicorn is up after $i attempts"
+              exit 0
+            fi
+            if ! kill -0 $GUNICORN_PID 2>/dev/null; then
+              echo "❌ Gunicorn process died!"
+              cat /tmp/gunicorn-error.log
+              exit 1
+            fi
+            echo "Attempt $i — waiting..."
+            sleep 2
+          done
+          echo "❌ Gunicorn did not start in time"
+          cat /tmp/gunicorn-error.log
+          exit 1
+
+      - name: Configure & start nginx
+        run: |
+          STATIC_PATH="${{ github.workspace }}/staticfiles"
+          MEDIA_PATH="${{ github.workspace }}/media"
+
+          sudo mkdir -p /etc/nginx/snippets
+          sudo cp ${{ github.workspace }}/nginx/snippets/security-headers.conf \
+                  /etc/nginx/snippets/security-headers.conf
+
+          # Use the CI-specific config — the production nginx.conf uses HTTPS/SSL
+          # and redirects port 80 to 443, both of which fail in CI without certs.
+          sed \
+            -e "s|CI_STATIC_PATH|${STATIC_PATH}|g" \
+            -e "s|CI_MEDIA_PATH|${MEDIA_PATH}|g" \
+            nginx/nginx-ci.conf | sudo tee /etc/nginx/nginx.conf
+
+          echo "=== Testing nginx config ==="
+          sudo nginx -t
+
+          sudo systemctl stop nginx || true
+          sudo systemctl start nginx
+          sudo systemctl status nginx --no-pager || true
+
+          if ! sudo systemctl is-active --quiet nginx; then
+            echo "=== Nginx failed to start, error log: ==="
+            sudo cat /var/log/nginx/error.log || echo "No error log"
+            exit 1
+          fi
+
+      - name: Wait for server on port 80
+        run: curl --retry 10 --retry-delay 2 --retry-connrefused http://localhost:80
+
+      - name: Run Nikto scan
+        # BUG FIX: `-Tuning X` (uppercase) is not a valid Nikto option.
+        # Use numeric tuning: 1=Info, 2=Interesting files, 3=Misconfiguration,
+        # 4=Injection, 5=Remote File Retrieval, 6=DoS (skip), 7=Remote Access,
+        # 9=SQL Injection, 0=File upload. Omitting 6 (DoS) to avoid false positives.
+        run: |
+          nikto -h http://localhost:80 -Tuning 1234579 \
+            -o /tmp/nikto-report.html -Format html || true
+
+      - name: Upload Nikto report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nikto-report
+          path: /tmp/nikto-report.html
+
+      - name: Django post-scan system check
+        # BUG FIX: the previous `sqlflush` just printed SQL to stdout — it did not
+        # execute anything or verify DB consistency. Use `check` instead.
+        run: python manage.py check

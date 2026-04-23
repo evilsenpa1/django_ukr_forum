@@ -1,0 +1,211 @@
+/* shop.css — общие стили для create_product и update_product */
+/* Подключать в обоих шаблонах вместо инлайн-стилей из JS */
+
+/* ========== Toast container ========== */
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 999999;
+  pointer-events: none;
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 640px) {
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+/* ========== Toast base ========== */
+.toast {
+  pointer-events: auto;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  animation: slideInRight 0.3s ease-out;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.toast.removing {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* Replaces: toast.style.cursor = 'pointer' */
+.toast-clickable {
+  cursor: pointer;
+}
+
+/* Replaces: toast.style.maxWidth = '450px' in showToastList */
+.toast-list {
+  max-width: 450px;
+}
+
+/* ========== Animations ========== */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes progress-shrink {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ========== Spinner ========== */
+.spinner {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* ========== Progress bar ========== */
+/*
+ * Replaces all progress.style.* inline assignments.
+ * JS добавляет класс dur-XXXX с нужной длительностью.
+ */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 0 0.5rem 0.5rem;
+  animation: progress-shrink linear forwards;
+}
+
+.toast-progress.dur-2500  { animation-duration: 2.5s; }
+.toast-progress.dur-3000  { animation-duration: 3s; }
+.toast-progress.dur-3500  { animation-duration: 3.5s; }
+.toast-progress.dur-4000  { animation-duration: 4s; }
+.toast-progress.dur-5000  { animation-duration: 5s; }
+.toast-progress.dur-6000  { animation-duration: 6s; }
+.toast-progress.dur-8000  { animation-duration: 8s; }
+.toast-progress.dur-10000 { animation-duration: 10s; }
+.toast-progress.dur-12000 { animation-duration: 12s; }
+
+/* ========== City dropdown ========== */
+/* Replaces: cityList.style.width и cityList.style.minWidth */
+.city-dropdown {
+  width: 100%;
+  min-width: 200px;
+}
+
+/* ========== Confirm modal ========== */
+/* Replaces: .modal-overlay из инлайн-стилей в update_product.js */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ===== PRODUCT CARD PAGE (merged from shop_product_card.css) ===== */
+
+  /* Дополнительные стили для улучшенной адаптивности */
+  .product-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .product-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .product-container {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  
+  /* Галерея изображений */
+  .image-gallery {
+    position: relative;
+    width: 100%;
+  }
+  
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+  
+  /* Кнопки навигации */
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .nav-button:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+  
+  @media (max-width: 640px) {
+    .nav-button {
+      padding: 0.375rem;
+      font-size: 0.875rem;
+    }
+  }
+  
+  /* Миниатюры */
+  .thumbnails-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .thumbnails-container {
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+  }
+  
+  .thumbnail {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  
+  .thumbnail:hover,
+  .thumbnail.active {
+    border-color: #3b82f6;
+  }

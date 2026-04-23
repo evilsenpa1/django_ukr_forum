@@ -1,0 +1,56 @@
+{% extends "main_temp/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto my-16 px-4">
+    <div class="bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+
+        <!-- Ukrainian flag gradient top bar -->
+        <div class="h-3 bg-gradient-to-r from-blue-500 via-blue-400 to-yellow-400"></div>
+
+        <div class="p-10 md:p-14 text-center">
+
+            <!-- Icon -->
+            <div class="flex justify-center mb-6">
+                <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center text-5xl shadow-inner border border-amber-200">
+                    🛠️
+                </div>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                Сервіс у розробці
+            </h1>
+
+            <!-- Divider -->
+            <div class="w-16 h-1 bg-gradient-to-r from-blue-400 to-yellow-400 mx-auto rounded-full mb-6"></div>
+
+            <!-- Description -->
+            <p class="text-gray-500 text-base md:text-lg leading-relaxed mb-8">
+                Ми вже працюємо над цим. <br class="hidden md:block" />
+                Зовсім скоро тут з'явиться щось корисне для нашої спільноти.
+            </p>
+
+            <!-- Status badge -->
+            <div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-sm font-semibold px-5 py-2.5 rounded-full mb-10">
+                <span class="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></span>
+                В активній розробці
+            </div>
+
+            <!-- Back link -->
+            <div class="mt-2">
+                <a href="{% url 'main:home' %}"
+                   class="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 hover:text-amber-700 transition">
+                    <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Повернутися на головну
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Bottom accent -->
+        <div class="h-1.5 bg-gradient-to-r from-yellow-400 via-amber-300 to-blue-500"></div>
+    </div>
+</div>
+{% endblock content %}

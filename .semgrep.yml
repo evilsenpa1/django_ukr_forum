@@ -1,0 +1,36 @@
+# .semgrep.yml
+rules:
+  # Кастомное правило: Блокируем DEBUG=True в продакшене
+  - id: django-debug-true-in-production
+    languages: [python]
+    message: "DEBUG=True is dangerous in production"
+    severity: ERROR
+    pattern: DEBUG = True
+    paths:
+      include:
+        - settings.py
+        - "**/settings/*.py"
+  
+  # Кастомное правило: Проверка SECRET_KEY
+  - id: django-hardcoded-secret-key
+    languages: [python]
+    message: "SECRET_KEY should not be hardcoded"
+    severity: ERROR
+    patterns:
+      - pattern: SECRET_KEY = $VAL
+      - pattern-not: SECRET_KEY = os.getenv(...)
+      - pattern-not: SECRET_KEY = os.environ.get(...)
+      - pattern-not: SECRET_KEY = env(...)
+      - pattern-not: SECRET_KEY = config(...)
+    paths:
+      include:
+        - settings.py
+
+  # Кастомное правило: XSS через innerHTML
+  - id: dangerous-innerhtml
+    languages: [javascript]
+    message: "Using innerHTML can lead to XSS"
+    severity: ERROR
+    patterns:
+      - pattern: $EL.innerHTML = $VAR
+      - pattern-not: $EL.innerHTML = "..."

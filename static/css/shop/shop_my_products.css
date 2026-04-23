@@ -1,0 +1,341 @@
+/* ===================================
+   SHOP MY PRODUCTS - CUSTOM STYLES
+   =================================== */
+
+/* Gradient Buttons */
+.btn-edit {
+  background: linear-gradient(to right, #10b981, #059669) !important;
+}
+
+.btn-delete {
+  background: linear-gradient(to right, #ef4444, #dc2626) !important;
+}
+
+.btn-in-process {
+  background: linear-gradient(to right, #d1d5db, #9ca3af) !important;
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.btn-action:hover:not(.btn-in-process) {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.btn-in-process {
+  color: #374151;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+@media (min-width: 640px) {
+  .btn-action {
+    font-size: 0.75rem;
+  }
+}
+
+/* Pagination Active Page */
+.pagination-active {
+  background: linear-gradient(to right, #2563eb, #1d4ed8) !important;
+  padding: 0.375rem 0.75rem;
+  color: white;
+  border-radius: 0.5rem;
+  border: 0;
+  font-weight: 600;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Product Card */
+.product-card {
+  background: white;
+  display: flex;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s;
+}
+
+.product-card:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Product Image Container */
+.product-image-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 200px;
+  height: 200px;
+}
+
+@media (max-width: 639px) {
+  .product-image-container {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Product Content */
+.product-content {
+  display: flex;
+  flex-grow: 1;
+  padding: 0.75rem;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .product-content {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+/* Product Info Column */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Product Title */
+.product-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.375;
+  margin-bottom: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.product-title a {
+  transition: color 0.2s;
+}
+
+.product-title a:hover {
+  color: #2563eb;
+}
+
+@media (min-width: 640px) {
+  .product-title {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .product-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  background: linear-gradient(to right, #f3f4f6, #e5e7eb);
+  color: #374151;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Product Location */
+.product-location {
+  font-size: 0.75rem;
+  color: #4b5563;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+@media (min-width: 640px) {
+  .product-location {
+    font-size: 0.875rem;
+  }
+}
+
+/* Product Actions Column */
+.product-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 90px;
+  align-items: flex-end;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .product-actions {
+    min-width: 110px;
+  }
+}
+
+/* Product Price */
+.product-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .product-price {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .product-price {
+    font-size: 1.25rem;
+  }
+}
+
+.product-price .currency {
+  font-size: 1 rem;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #6b7280;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.empty-state svg {
+  width: 4rem;
+  height: 4rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+  color: #9ca3af;
+}
+
+.empty-state-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.empty-state-description {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+}
+
+/* Pagination */
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.pagination-list {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .pagination-list {
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+.pagination-link {
+  padding: 0.375rem 0.5rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  color: #374151;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: 500;
+}
+
+@media (min-width: 640px) {
+  .pagination-link {
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+.pagination-link:hover {
+  background: #f9fafb;
+}
+
+.pagination-disabled {
+  padding: 0.375rem 0.5rem;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+@media (min-width: 640px) {
+  .pagination-disabled {
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+.pagination-number {
+  padding: 0.375rem 0.75rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  color: #374151;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination-number:hover {
+  background: #f9fafb;
+}
+
+/* SVG Icons */
+.icon-sm {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+}
+
+.icon-location {
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}

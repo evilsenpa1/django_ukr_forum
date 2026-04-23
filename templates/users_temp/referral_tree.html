@@ -1,0 +1,90 @@
+{% extends "main_temp/base.html" %}
+
+{% block content %}
+<div class="p-10 overflow-auto min-h-screen">
+    <div class="tree">
+        <ul class="flex justify-center">
+            {% include "users_temp/tree_node.html" with tree=tree %}
+        </ul>
+    </div>
+</div>
+
+<style>
+    /* Базові налаштування списків */
+    .tree ul {
+        position: relative;
+        padding-top: 40px; /* Відстань для вертикальних ліній */
+        transition: all 0.5s;
+    }
+
+    .tree li {
+        position: relative;
+        transition: all 0.5s;
+    }
+
+    /* Вертикальна лінія від батька вниз */
+    .tree ul::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        border-left: 1px solid #1e293b; /* slate-800 */
+        width: 0;
+        height: 20px;
+    }
+
+    /* Горизонтальна лінія-перемичка між дітьми */
+    .tree li::before, .tree li::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 50%;
+        border-top: 1px solid #1e293b;
+        width: 50%;
+        height: 20px;
+    }
+    .tree li::after {
+        right: auto;
+        left: 50%;
+        border-left: 1px solid #1e293b;
+    }
+
+    /* Видаляємо зайві лінії для крайніх елементів */
+    .tree li:only-child::after, .tree li:only-child::before {
+        display: none;
+    }
+    .tree li:only-child {
+        padding-top: 0;
+    }
+    .tree li:first-child::before, .tree li:last-child::after {
+        border: 0 none;
+    }
+    .tree li:last-child::before {
+        border-right: 1px solid #1e293b;
+        border-radius: 0 5px 0 0;
+    }
+    .tree li:first-child::after {
+        border-radius: 5px 0 0 0;
+    }
+
+    /* Лінія від горизонтальної перемички до самого вузла */
+    .tree ul ul::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        border-left: 1px solid #1e293b;
+        width: 0;
+        height: 20px;
+    }
+
+    /* Стиль самих прямокутників */
+    .user-node {
+        transition: all 0.3s;
+    }
+    .user-node:hover {
+        background-color: #f1f5f9; /* slate-100 */
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% comment %} /tree_node.html (рекурсивний блок): {% endcomment %}
+{% for node in tree %}
+    <li class="relative flex flex-col items-center px-4">
+        <div class="user-node z-10 bg-white border-2 border-slate-800 px-6 py-2 min-w-[100px] text-center shadow-sm">
+            <span class="block font-bold text-slate-900 text-sm">{{ node.user.username }}</span>
+        </div>
+
+        {% if node.children %}
+            <ul class="flex justify-center pt-10 relative">
+                {% include "users_temp/tree_node.html" with tree=node.children %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta name="google" content="notranslate">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% if title %}{{ title }}{% else %}Укр-Форум{% endif %}</title>
+
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/main/style_my.css' %}" />
+        <link rel="icon" href="{% static 'favicon/icon.svg' %}" type="image/svg" />
+
+        {% block styles %}{% endblock styles %}
+    </head>
+    <body class="bg_my_region flex flex-col min-h-screen" translate="no">
+
+        {% block header %}
+            {% include "main_temp/header.html" %}
+        {% endblock header %}
+
+        <main class="grow pt-2">
+            {% block content %}{% endblock content %}
+        </main>
+
+        {% block footer %}
+            {% include "main_temp/footer.html" %}
+        {% endblock footer %}
+
+    </body>
+</html>

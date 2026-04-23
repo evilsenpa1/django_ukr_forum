@@ -1,0 +1,29 @@
+{% block footer %}
+
+<!-- Site footer -->
+<footer class="bg-gray-700 text-white text-sm py-1">
+  <div
+    class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center"
+  >
+    <div>
+      <p class="font-mono">Користувачів</p>
+      <p class="text-sm" id="user-count">{{ users_visitors|default:"-" }}</p>
+    </div>
+    <div>
+      <p class="font-mono">Відвідувачів всього</p>
+      <p id="visitor-total">{{ total_visitors|default:"-"}}</p>
+    </div>
+    <div>
+      <p class="font-mono">Відвідувачів сьогодні</p>
+      <p id="visitor-today">{{ today_visitors|default:"-"}} | {{num_visits}}</p>
+      
+    </div>
+    
+    <div>
+      <p class="font-mono">Активні зараз</p>
+      <p id="visitor-active">{{aktive_visitors|default:"-"}}</p>
+    </div>
+  </div>
+</footer>
+
+{% endblock footer %}

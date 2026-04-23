@@ -1,0 +1,18 @@
+<nav class="flex justify-between md:items-center gap-2 py-1">
+    <div class="flex flex-wrap items-center text-sm">
+        <a href="{% url 'main:home' %}" class="text-blue-600 hover:text-blue-800 transition">Головна</a>
+
+        {% for crumb in auto_crumbs %}
+        <span class="text-gray-400 mx-1">/</span>
+        {% if forloop.last or not crumb.is_clickable %}
+            <span class="text-gray-600 font-medium truncate max-w-[150px] md:max-w-none">{{ crumb.name }}</span>
+        {% else %}
+            <a href="{{ crumb.url }}" class="text-blue-600 hover:text-blue-800 truncate max-w-[100px] md:max-w-none">
+                {{ crumb.name }}
+            </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    
+</nav>

@@ -1,0 +1,98 @@
+{% extends "main_temp/base.html" %}
+{% load static %}
+
+{% block styles %}
+{# Shared CSS for create/update product pages — no inline styles (CSP-compliant) #}
+<link rel="stylesheet" href="{% static 'css/shop/shop.css' %}" />
+{% endblock styles %}
+
+{% block content %}
+
+<form id="product-form" method="post" enctype="multipart/form-data"
+      class="max-w-6xl mx-auto m-5 p-10 bg-white rounded-2xl shadow-lg">
+  {% csrf_token %}
+  <h2 class="text-3xl font-semibold text-gray-800 mb-6">Додати товар</h2>
+  {{ form.non_field_errors }}
+
+  <label class="block mb-2 text-gray-700 font-medium">Назва товару<span class="text-red-500">*</span></label>
+  {{ form.name }} {{ form.name.errors }}
+  <p class="text-gray-400 text-sm mt-1">Максимум 150 символів</p>
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Опис товару<span class="text-red-500">*</span></label>
+  {{ form.description }} {{ form.description.errors }}
+  <p class="text-gray-400 text-sm mt-1">Максимум 1500 символів</p>
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Категорія <span class="text-red-500">*</span></label>
+  {{ form.category }} {{ form.category.errors }}
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Ціна <span class="text-red-500">*</span></label>
+  {{ form.price }} {{ form.price.errors }}
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Стан <span class="text-red-500">*</span></label>
+  {{ form.status }} {{ form.status.errors }}
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Валюта <span class="text-red-500">*</span></label>
+  <div id="country-currency"
+       data-country-currency
+       class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-800">
+    &mdash;
+  </div>
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Країна <span class="text-red-500">*</span></label>
+  <div class="relative w-full">
+    <input
+      id="country-input"
+      name="country_name"
+      type="text"
+      autocomplete="off"
+      placeholder="Оберіть країну..."
+      value="{{ request.GET.country_name|default:request.user.country|default:'' }}"
+      data-default-id="{{ request.GET.country_id|default:request.user.country_id|default:form.country.value|default:'' }}"
+      class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      aria-autocomplete="list"
+      aria-haspopup="listbox"
+    />
+    <input type="hidden" id="country-id" name="{{ form.country.name }}"
+           value="{{ request.GET.country_id|default:form.country.value|default:'' }}" />
+    {# w-full заменяет style.width из JS #}
+    <ul id="country-list"
+        class="hidden absolute left-0 mt-1 w-full max-h-44 overflow-y-auto rounded-md shadow-lg border bg-white z-50">
+    </ul>
+  </div>
+  {{ form.country.errors }}
+
+  <label class="block mt-6 mb-2 text-gray-700 font-medium">Місто <span class="text-red-500">*</span></label>
+  <div class="relative w-full">
+    <input type="text" name="city_text"
+           class="city-autocomplete w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+           placeholder="Введіть місто"
+           data-city-id="id_city"
+           data-country="country-id"
+           autocomplete="off">
+    <input type="hidden" name="city_id" id="id_city">
+  </div>
+  <p class="text-gray-400 text-sm mt-1">Пошук англійською мовою</p>
+
+  <label class="block mt-8 mb-2 text-gray-700 font-medium">Фотографії</label>
+  <div id="drop-area"
+       class="w-full border-2 border-dashed border-gray-300 p-8 rounded-xl
+              text-center text-gray-500 hover:border-blue-400 hover:bg-blue-50 transition">
+    Перенесіть фото сюди або
+    {# FIX: onclick замінено на id + addEventListener в JS #}
+    <span id="upload-trigger" class="text-blue-600 underline cursor-pointer">завантажте</span>
+    <input type="file" id="fileElem" name="images" accept="image/*" multiple hidden>
+  </div>
+  <p class="text-gray-400 text-sm mt-1">Максимум 10 фото</p>
+  <div id="gallery" class="flex flex-wrap gap-2 mt-4"></div>
+
+  <div class="mt-8 flex justify-between">
+    <a href="{% url 'shop:index' %}"
+       class="bg-gray-200 text-gray-800 px-5 py-2.5 rounded hover:bg-gray-300 transition">Назад</a>
+    <button type="submit"
+            class="bg-green-600 text-white px-6 py-2.5 rounded hover:bg-green-700 transition">Додати товар</button>
+  </div>
+</form>
+
+<script src="{% static 'js/shop/product_form_shared.js' %}"></script>
+<script src="{% static 'js/shop/create_product.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,96 @@
+{% extends "main_temp/base.html" %} {% load static %} {% block content %}
+<div class="min-h-screen py-12 px-4 bg-gradient-to-br  from-gray-50 to-amber-50/30">
+    <div class="max-w-lg mx-auto border">
+        
+        <div class="relative bg-white/70 backdrop-blur-md border border-white/80 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-8 sm:p-12">
+            
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200/30 blur-3xl rounded-full -z-10"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-100/30 blur-3xl rounded-full -z-10"></div>
+
+            <div class="text-center mb-10">
+                <span class="text-[10px] uppercase tracking-[0.3em] text-amber-600/70 font-bold mb-2 block">Ваш простір</span>
+                <h1 class="text-3xl font-extralight text-gray-800 tracking-tight">Оберіть <span class="font-normal italic">локацію</span></h1>
+                <div class="w-8 h-[1px] bg-amber-300 mx-auto mt-4"></div>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="mb-8 p-4 rounded-2xl bg-white/50 border border-green-100 text-green-700 text-sm text-center animate-pulse">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" id="locationForm" class="space-y-8">
+                {% csrf_token %}
+                {% load widget_tweaks %}
+
+                <input type="hidden" name="country_name" id="country_name_hidden">
+                <input type="hidden" name="region_name" id="region_name_hidden" />
+                <input type="hidden" name="city_name" id="city_name_hidden" />
+                <input type="hidden" name="city_api_id" id="city_api_id_hidden" />
+                <input type="hidden" name="latitude"  id="latitude_hidden" />
+                <input type="hidden" name="longitude" id="longitude_hidden" />
+
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] ml-4 text-gray-400 font-medium tracking-wider uppercase">Країна</label>
+                        <div class="relative group">
+                            {{ form.country|add_class:"w-full bg-white/40 border border-gray-100 rounded-full px-6 py-3.5 outline-none focus:ring-4 focus:ring-amber-400/5 focus:border-amber-200 transition-all duration-500 text-gray-600 font-light" }}
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none group-focus-within:text-amber-300 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] ml-4 text-gray-400 font-medium tracking-wider uppercase">Область</label>
+                        <div class="relative group">
+                            <select name="region" id="id_region" class="w-full appearance-none bg-white/40 border border-gray-100 rounded-full px-6 py-3.5 outline-none focus:ring-4 focus:ring-amber-400/5 focus:border-amber-200 transition-all duration-500 text-gray-600 font-light">
+                                <option value="">Оберіть регіон</option>
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] ml-4 text-gray-400 font-medium tracking-wider uppercase">Місто</label>
+                        <div class="relative group">
+                            <select name="city" id="id_city" class="w-full appearance-none bg-white/40 border border-gray-100 rounded-full px-6 py-3.5 outline-none focus:ring-4 focus:ring-amber-400/5 focus:border-amber-200 transition-all duration-500 text-gray-600 font-light">
+                                <option value="">Оберіть місто</option>
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 pt-6">
+                    <button type="submit" class="w-full py-4 bg-amber-400/90 text-white rounded-full font-medium tracking-wide shadow-[0_10px_20px_rgba(251,191,36,0.2)] hover:bg-amber-400 hover:shadow-[0_15px_25px_rgba(251,191,36,0.3)] transition-all duration-300 active:scale-[0.98]">
+                        Зберегти зміни
+                    </button>
+                    <a href="javascript:history.back()" class="w-full py-3 text-center text-gray-400 text-sm font-light hover:text-gray-600 transition-colors">
+                        повернутися назад
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <p class="text-center mt-8 text-gray-300 text-[10px] tracking-[0.2em] uppercase">Ваша приватність — наш пріоритет</p>
+    </div>
+</div>
+
+<style>
+    /* Плавна поява сторінки */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .relative { animation: fadeIn 0.8s ease-out; }
+</style>
+
+<script src="{% static "js/cities.js" %}"></script>
+{% endblock %}

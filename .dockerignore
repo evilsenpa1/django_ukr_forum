@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual env
+venv/
+env/
+.venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Node.js (для Tailwind)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*.yml
+
+# Database
+*.sqlite3
+*.db
+
+# Media & Static (монтуємо окремо)
+media/
+staticfiles/
+static_cdn/
+
+# Tests
+.tox/
+.coverage
+htmlcov/
+
+# Documentation
+*.md
+docs/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+
+# Исключаем генерируемый CSS — он будет скопирован из tailwind-builder stage
+static/css/style.css

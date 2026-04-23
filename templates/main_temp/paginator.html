@@ -1,0 +1,23 @@
+{% block paginator %}
+<!--Пагінатор ПОЧАТОК-->
+
+<div class="w-full border-t bg-[#faee9d] mx-auto items-center text-center">
+   {% with request.GET.urlencode as query_params %}
+    {% if page_obj.has_previous %}
+        <a href="?{% if query_params %}{{ query_params }}&{% endif %}page=1">&laquo; Перша</a>
+        |
+        <a href="?{% if query_params %}{{ query_params }}&{% endif %}page={{page_obj.previous_page_number}}">Минула</a>
+    {% endif %}
+
+    <span class="text-xs text-gray-500 mx-2">Стор.{{page_obj.number}} з {{page_obj.paginator.num_pages}}.</span>
+
+    {% if page_obj.has_next %}
+        <a href="?{% if query_params %}{{ query_params }}&{% endif %}page={{page_obj.next_page_number}}">Слідуюча &raquo;</a>
+    {% endif %}
+{% endwith %}
+
+</div>
+
+
+<!--Пагінатор КІНЕЦЬ-->
+{% endblock paginator %}

@@ -1,0 +1,39 @@
+<div class="sticky top-[110px] z-10 mb-4 flex justify-between items-center space-x-2">
+    <input placeholder="Пошук" class="border bg-amber-100 rounded-md px-1 py-2 w-[130px]" />
+    <div class="flex justify-between space-x-2 items-center border rounded-md px-1 py-0.5 w-full bg-amber-50">        
+        <input type="hidden" name="tags" id="hidden-tags-input" value="{{request.GET.tags|default:''}}">
+        <div id="active-tags-container" class="flex flex-wrap gap-2 "></div>
+        <div class="">
+            <div class="flex space-x-2 ">
+                <div class="w-20 bg-[#faee9d]">
+                    <select id="country-select" onchange="loadGeoData('region')" class="w-full border rounded text-[12px] px-1 py-2">
+                        <option value="">Країна</option>
+                        {% for c in countries %}
+                            <option value="{{ c.id }}" {% if request.GET.country == c.id|stringformat:"s" %}selected{% endif %}>
+                                {{ c.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="w-20 bg-[#faee9d]">
+                    <select id="region-select" onchange="loadGeoData('city')" class="w-full border rounded text-[12px] px-1 py-2" disabled>
+                        <option value="">Регіон</option>
+                    </select>
+                </div>
+                <div class="w-20 bg-[#faee9d]">
+                    <select id="city-select" onchange="applyFilters()" class="w-full border rounded text-[12px] px-1 py-2" disabled>
+                                        <option value="">Місто</option>
+                                    </select>
+                </div>                
+            </div>           
+        </div>
+    </div>
+    <a
+        href="{% url 'articles:article_create' %}"
+        class="bg-blue-600 hover:bg-blue-700 text-white w-[250px] text-center py-2 rounded-full text-sm font-bold shadow-lg transition transform hover:scale-105"
+    >
+        + Задати питання
+    </a>
+</div>
+
+{% comment %} &times;: Спеціальний HTML-символ для красивого хрестика ×. {% endcomment %}

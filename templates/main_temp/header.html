@@ -1,0 +1,247 @@
+{% load static %}
+{% block header %}
+<header class="sticky top-0 shadow-md z-50">
+    <!-- #50a2ff   -->
+    <div class="w-full mx-auto items-center min-w-95">
+        <nav class="relative flex items-center bg-[#2e332e] justify-between flex-wrap gap-4 px-3">
+            <!-- ЛОГОТИП ПОЧАТОК-->
+            <div class="w-12.5">
+                <a href="{% url 'main:home' %}" class="text-blue-950 text-sm w-full">
+                    <img src="{% static "images/main/image (2).jpg" %}" alt="УкрСпільнота" class="rounded-4xl" />
+                </a>
+            </div>
+            <!-- ЛОГОТИП КІНЕЦЬ-->
+
+            {% if user.is_authenticated %}
+            <div>
+                <!-- БУРГЕР-МЕНЮ ПОЧАТОК (з’являється тільки на мобілці)  -->
+                <div class="lg:hidden">
+                    <button id="menu-btn" class="text-black text-3xl font-bold block lg:hidden focus:outline-none">
+                        ☰
+                    </button>
+                </div>
+                <!-- БУРГЕР-МЕНЮ КІНЕЦЬ-->
+
+                <!--Головне-меню МОБІЛ ПОЧАТОК-->
+                <div id="mobale-menu" class="hidden absolute bg-[#f7f6f1] top-full left-0 w-full shadow-xl lg:hidden">
+                    <ul class="flex flex-col p-4 gap-3">
+                        <li>
+                            <a
+                                href="{% url 'shop:index' %}"
+                                class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition"
+                            >
+                                Барахолка
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}" 
+                                class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition" >
+                                Дошка ОБ'ЯВ
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}"
+                                class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition" >
+                                Чат
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}"
+                                class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition">
+                                Блог
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'main:in_development' %}"
+                            class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition">
+                                Новини
+                            </a>
+                        </li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a href="/admin/"
+                                class="block py-2 border-b border-amber-400 hover:bg-[#A9A437] focus:bg-amber-200 transition"
+                            >
+                                Адмін
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!--Головне-меню МОБІЛ КІНЕЦЬ-->
+
+                <!--Головне-меню ПОЧАТОК-->
+                <div class="flex space-x-2">
+                    <ul class="hidden lg:flex items-center gap-1">
+                        <li>
+                            <a
+                                href="{% url 'shop:index' %}"
+                                class="bg-[#f3d305] rounded text-bg-[#33332E] text-xs inline-block min-w-28 py-2 text-center hover:bg-[#A9A437] transition"
+                            >
+                                Барахолка
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}"
+                                class="bg-[#f3d305] rounded text-bg-[#33332E] text-xs inline-block min-w-28 py-2 font-medium text-center hover:bg-[#A9A437] transition"
+                            >
+                                Дошка ОБ'ЯВ
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}"
+                                class="bg-[#f3d305] rounded btn-crack text-bg-[#33332E] text-xs inline-block min-w-28 font-medium py-2 text-center hover:bg-[#A9A437] transition"
+                            >
+                                Чат
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{% url 'main:in_development' %}"
+                                class="bg-[#f3d305] rounded btn-crack text-bg-[#33332E] text-xs inline-block min-w-28 font-medium py-2 text-center hover:bg-[#A9A437] transition"
+                            >
+                                Блог
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="bg-[#f3d305] rounded btn-crack text-bg-[#33332E] text-xs inline-block min-w-28 font-medium py-2 text-center hover:bg-[#A9A437] transition"
+                                href="{% url 'main:in_development' %}"
+                            >
+                                Новини
+                            </a>
+                        </li>
+                        <li class="relative group list-none">
+                            <button class="flex items-center bg-[#f3d305] rounded px-4 py-2 text-[#33332E] text-xs min-w-28 hover:bg-[#A9A437] transition">
+                                <span>Інформація</span>
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+
+                            <ul class="hidden group-hover:block absolute left-0 mt-1 bg-white shadow-xl rounded-md border border-gray-100 min-w-[150px] p-2 space-y-1">
+                                <li>
+                                    <a class="block px-4 py-2 text-xs text-[#33332E] hover:bg-amber-100 rounded transition"
+                                    href="{% url 'main:about' %}">
+                                    🇺🇦 Про нас
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="block px-4 py-2 text-xs text-[#33332E] hover:bg-amber-100 rounded transition"
+                                    href="{% url 'main:rules' %}">
+                                    📜 Правила спільноти
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a
+                                class="bg-[#f3d305] rounded text-bg-[#33332E] text-xs inline-block font-medium px-5 text-center hover:bg-[#A9A437] transition"
+                                href="/admin/"
+                            >
+                                Адмін
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                class="bg-[#f3d305] rounded text-bg-[#33332E] text-xs inline-block font-medium px-5 text-center hover:bg-[#A9A437] transition"
+                                href="{% url "users:admin_referral_tree" %}"
+                            >
+                                tree
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!--Головне-меню КІНЕЦЬ-->
+            </div>
+
+            <!--Меню логування ПОЧАТОК-->
+            <div class="flex gap-2 flex-wrap items-center">
+            {% if user.is_authenticated %}
+                    <!--
+                    <p>Привіт {{user.username}}!</p>
+                    -->
+                    <a href="{% url 'users:user_detail' %}" class="btn-crack bg-amber-500 text-xs px-5 py-2">
+                        {{ user.username }} / {{ user.id }}
+                    </a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button
+                            type="submit"
+                            class="btn-crack bg-[#f3d305] rounded-md text-bg-[#33332E] inline-block font-medium p-2 text-center hover:bg-[#A9A437] transition"
+                        >
+                            <img src="{% static 'favicon/exit.png' %}" alt="Вийти" class="w-4" />
+                        </button>
+                    </form>
+                    {% else %}
+                    <a
+                        href="{% url 'users:login' %}"
+                        class="btn-crack bg-[#f3d305] rounded-md text-bg-[#33332E] inline-block font-medium p-2 text-center hover:bg-[#A9A437] transition"
+                    >
+                        <img src="{% static 'favicon/log-in.png' %}" alt="Увійти" class="w-4" />
+                    </a>
+
+                    <a
+                        href="{% url 'users:signup' %}"
+                        class="btn-crack bg-[#f3d305] text-bg-[#33332E] text-xs inline-block rounded-md font-medium p-2 text-center hover:bg-[#A9A437] transition"
+                    >
+                        <img src="{% static "favicon/registr.png" %}" alt="Реєстрація" class="w-4" />
+                    </a>
+                    {% endif %}
+                </div>
+                <!--Меню логування КІНЕЦЬ-->
+
+                <!-- Локація ПОЧАТОК  -->
+                <div class="mx-2 flex">
+                    <a
+                        href="{% url 'geo:location_page' %}"
+                        id="openLocation"
+                        class="bg-[#f3d305] text-bg-[#33332E] inline-block font-medium rounded-md text-center hover:bg-[#A9A437] transition"
+                    >
+                        <img src="{% static "favicon/location.png" %} " class="w-8 p-2" alt="Локація" />
+                    </a>
+                </div> 
+                <!-- Локація КІНЕЦЬ  -->
+            {% else %}
+               <a
+                    href="{% url 'users:login' %}"
+                    class="btn-crack bg-[#f3d305] rounded-md text-bg-[#33332E] inline-block font-medium p-2 text-center hover:bg-[#A9A437] transition"
+                >
+                    <img src="{% static 'favicon/log-in.png' %}" alt="Увійти" class="w-4" />
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+    <div class="bg-[#faee9d] text-sm px-2 flex justify-between">
+        <div>
+            {% block breadcrumbs %}
+            {% include 'part_global/breadcrumbs.html' %}
+        {% endblock breadcrumbs %}
+        </div>
+        
+        <div
+            class="flex items-center text-[11px] md:text-xs font-semibold text-amber-700 md:bg-transparent p-1.5 md:p-0 rounded-lg">
+            <span class="mr-1 text-amber-500 md:hidden">📍</span>
+            <span class="whitespace-nowrap">{{ user.country }}</span>
+            <div class="hidden md:inline">
+                {% if user.region %}
+                <span class="mx-1 text-gray-400">/</span>
+                <span class="whitespace-nowrap">{{ user.region }}</span>
+                {% endif %} {% if user.city %}
+                <span class="mx-1 text-gray-400">/</span>
+                <span class="whitespace-nowrap font-bold text-amber-800">{{ user.city }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+</header>
+<script src="{% static 'js/main/mob_menu.js' %}"></script>
+{% endblock header %}

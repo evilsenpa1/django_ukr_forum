@@ -1,0 +1,103 @@
+{% extends "main_temp/base.html" %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/error/errors.css' %}">
+{% endblock styles %}
+
+{% block header %}
+<!-- Прибираємо header для error-сторінок -->
+{% endblock header %}
+
+{% block footer %}
+<!-- Прибираємо footer для error-сторінок -->
+{% endblock footer %}
+
+{% block content %}
+<div class="error-page-container min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="max-w-2xl w-full">
+        <!-- Error Card -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Header with Ukrainian colors -->
+            <div class="bg-gradient-to-r from-ukraine-blue to-blue-700 h-2"></div>
+            <div class="bg-gradient-to-r from-ukraine-yellow to-yellow-400 h-2"></div>
+            
+            <div class="p-8 md:p-12 text-center">
+                <!-- Error Code -->
+                <div class="error-code-container mb-6">
+                    <h1 class="text-8xl md:text-9xl font-bold text-gray-200 leading-none">500</h1>
+                </div>
+                
+                <!-- Icon -->
+                <div class="mb-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-red-100">
+                        <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    Внутрішня помилка сервера
+                </h2>
+                
+                <!-- Description -->
+                <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+                    Вибачте, щось пішло не так на нашому сервері. Ми вже працюємо над вирішенням цієї проблеми.
+                </p>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/" class="btn-primary inline-flex items-center justify-center px-6 py-3 bg-ukraine-blue text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        На головну
+                    </a>
+                    <button onclick="location.reload()" class="btn-secondary inline-flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-all duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Оновити сторінку
+                    </button>
+                </div>
+                
+                <!-- Additional Info -->
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <div class="bg-ukraine-yellow bg-opacity-10 rounded-lg p-4 text-left">
+                        <h3 class="font-semibold text-gray-800 mb-2">Що можна зробити?</h3>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-ukraine-yellow mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Спробуйте оновити сторінку через кілька хвилин
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-ukraine-yellow mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Поверніться на головну сторінку
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-ukraine-yellow mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Якщо проблема повторюється, зв'яжіться з адміністратором
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p>Код помилки: 500 | Внутрішня помилка сервера</p>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/error/errors.js' %}"></script>
+{% endblock content %}

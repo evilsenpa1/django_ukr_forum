@@ -1,0 +1,225 @@
+{% extends "main_temp/base.html" %} {% load static %}
+
+{% block styles %} 
+<link rel="stylesheet" href="{% static 'css/shop/shop.css' %}" />
+{% endblock styles %}
+
+{% block content %}
+
+<main class="w-full px-4 py-6 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <div class="product-container">
+    
+    <!-- Левая колонка: Галерея изображений и описание -->
+    <section class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+      {% if product.images.all.count > 0 %}
+        <div class="image-gallery">
+          <!-- Карусель изображений -->
+          <div class="carousel-container">
+            {% for img in product.images.all %}
+            <img
+              src="{{ img.image.url }}"
+              class="carousel-img absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-500 ease-in-out opacity-0 {% if forloop.first %}opacity-100{% endif %}"
+              alt="{{ product.name }} - Изображение {{ forloop.counter }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            />
+            {% endfor %}
+            
+            <!-- Кнопки навигации -->
+            {% if product.images.all.count > 1 %}
+            <button
+              id="prevBtn"
+              class="nav-button left-2 sm:left-4"
+              aria-label="Попередне изображение"
+            >
+              <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              id="nextBtn"
+              class="nav-button right-2 sm:right-4"
+              aria-label="Наступне зображення"
+            >
+              <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            {% endif %}
+          </div>
+
+          <!-- Миниатюры -->
+          {% if product.images.all.count > 1 %}
+          <div class="thumbnails-container">
+            {% for img in product.images.all %}
+            <img
+              src="{{ img.image.url }}"
+              data-index="{{ forloop.counter0 }}"
+              class="thumbnail {% if forloop.first %}active{% endif %}"
+              alt="Миниатюра {{ forloop.counter }}"
+              loading="lazy"
+            />
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      {% else %}
+        <!-- Заглушка, если нет изображений -->
+        <div class="carousel-container bg-gray-100 flex items-center justify-center">
+          <svg class="w-16 h-16 sm:w-24 sm:h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      {% endif %}
+
+      <!-- Описание товара -->
+      <div class="mt-6 sm:mt-8">
+        <h3 class="font-semibold text-lg sm:text-xl mb-3 text-gray-900">ОПИС</h3>
+        <p class="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">{{ product.description }}</p>
+      </div>
+    </section>
+
+    <!-- Правая колонка: Информация о товаре и продавце -->
+    <aside class="flex flex-col gap-4">
+      
+      <!-- Название и цена товара -->
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h1 class="font-bold text-xl sm:text-2xl mb-3 sm:mb-4 text-gray-900 leading-tight">
+          {{ product.name }}
+        </h1>
+        <p class="text-2xl sm:text-3xl font-bold text-blue-600 mb-4 sm:mb-6">
+          {{ product.price }} {{ product.country.currency_symbol|default:product.country.currency }}
+          <span class="text-sm sm:text-base font-normal text-gray-500">/ за 1 шт.</span>
+        </p>
+        
+        <!-- Кнопки действий -->
+        <div class="flex flex-col gap-3">
+          {% if request.user.is_authenticated and not request.user.id == product.author.id  %}
+          <div class="w-full bg-blue-50 border border-blue-200 text-blue-600 font-semibold rounded-lg py-3 px-4 flex items-center justify-center gap-2 text-sm sm:text-base">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" />
+            </svg>
+            <span>Натисніть на продавця для отримання контактів</span>
+          </div>
+{% comment %}
+            <button
+              id="contact" 
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-3 px-4 transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <span>Зв'язатися з продавцем</span>
+            </button>
+            {% else %}
+            <a 
+              href="{% url 'users:login' %}?next={{ request.path }}"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-3 px-4 transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <span>Увійдіть, щоб зв'язатися</span>
+            </a>
+{% endcomment %}
+          {% endif %}
+          
+          {% if request.user.is_authenticated and request.user.id == product.author.id or request.user.is_staff %}
+          <a 
+            href="{% url 'shop:update_product' pk=product.id product_slug=product.slug %}"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg py-3 px-4 transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span>Редагувати товар</span>
+          </a>
+          <a 
+            href="{% url 'shop:delete_product' pk=product.id product_slug=product.slug %}"
+            class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg py-3 px-4 transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Видалити товар</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Информация о продавце -->
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h3 class="font-semibold text-base sm:text-lg mb-4 text-gray-900">ПРОДАВЕЦЬ</h3>
+        <div class="flex items-start gap-3 mb-4">
+{% comment %}
+            <img
+              src="https://via.placeholder.com/50"
+              class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex-shrink-0 object-cover"
+              alt="Аватар користувача"
+            />
+{% endcomment %}
+          <div class="flex-1 min-w-0">
+            <a 
+              href="{% url 'users:user_detail_public' product.author.id %}" 
+              class="font-medium text-blue-600 hover:text-blue-700 transition-colors text-sm sm:text-base block truncate"
+            >
+              {{ product.author }}
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">
+              На сайті з {{ product.author.date_joined|date:"d.m.Y" }}
+            </p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Местоположение -->
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-sm sm:text-base text-gray-900 mb-1">Місцезнаходження</p>
+            <p class="text-xs sm:text-sm text-gray-700">
+              {% if product.city and product.country %}
+                {{ product.city.name }}, {{ product.region.name }}, {{ product.country }}
+              {% else %}
+                Адреса не вказана
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Дата обновления -->
+      {% if product.date_update %}
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-sm sm:text-base text-gray-900 mb-1">Оновлено</p>
+            <p class="text-xs sm:text-sm text-gray-700">{{ product.date_update|date:"d.m.Y о H:i" }}</p>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Дата создания -->
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <div class="flex items-start gap-3">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-sm sm:text-base text-gray-900 mb-1">Створено</p>
+            <p class="text-xs sm:text-sm text-gray-700">{{ product.date|date:"d.m.Y" }}</p>
+          </div>
+        </div>
+      </div>
+      
+    </aside>
+  </div>
+</main>
+
+<script src="{% static 'js/shop/product_cart.js' %}"></script>
+
+{% endblock content %}

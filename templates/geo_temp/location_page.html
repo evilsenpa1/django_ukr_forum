@@ -1,0 +1,81 @@
+{% extends "main_temp/base.html" %} {% load static %} {% block content %}
+<div class="min-h-screen py-2 min-w-[370px]">
+    <div class="max-w-[480px] mx-auto">
+        
+        <div class="bg-white border border-gray-200 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.03)] sm:p-5">
+            
+            <header class="text-center mb-3">
+                {% comment %} <div class="inline-block py-1 bg-gray-100 rounded-full text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase mb-4">
+                    Settings
+                </div> {% endcomment %}
+                <h3 class="text-2xl font-medium text-gray-900 tracking-tight">Локація</h3>
+            </header>
+
+            <form method="post" id="locationForm" class="space-y-8">
+                {% csrf_token %}
+                {% load widget_tweaks %}
+
+                <input type="hidden" name="country_name" id="country_name_hidden">
+                <input type="hidden" name="currency_code" id="currency_code_hidden">
+                <input type="hidden" name="currency_symbol" id="currency_symbol_hidden">
+                
+                <input type="hidden" name="region_name" id="region_name_hidden" />
+                <input type="hidden" name="city_name" id="city_name_hidden" />
+                <input type="hidden" name="city_api_id" id="city_api_id_hidden" />
+                <input type="hidden" name="latitude"  id="latitude_hidden" />
+                <input type="hidden" name="longitude" id="longitude_hidden" />
+
+                <div class="space-y-6">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-gray-900 ml-1">Країна</label>
+                        <div class="relative group">
+                            {{ form.country|add_class:"w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 outline-none focus:border-black focus:ring-[3px] focus:ring-black/5 transition-all duration-200 cursor-pointer" }}
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-black transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-gray-900 ml-1">Область / Регіон</label>
+                        <div class="relative group">
+                            <select name="region" id="id_region" class="w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 outline-none focus:border-black focus:ring-[3px] focus:ring-black/5 transition-all duration-200 cursor-pointer">
+                                <option value="">Оберіть область</option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-black transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-gray-900 ml-1">Місто</label>
+                        <div class="relative group">
+                            <select name="city" id="id_city" class="w-full appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 outline-none focus:border-black focus:ring-[3px] focus:ring-black/5 transition-all duration-200 cursor-pointer">
+                                <option value="">Оберіть місто</option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:text-black transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between min-w-[350px] space-x-2 p-2">
+                    <a href="javascript:history.back()" 
+                    class="bg-[#CEC526] rounded p-2 text-bg-[#33332E] text-lg hover:bg-[#F2E70A]">
+                        Повернутися
+                    </a>
+                    <button type="submit"
+                    class="bg-[#CEC526] rounded p-2 text-bg-[#33332E] text-lg hover:bg-[#F2E70A]">
+                        Зберегти зміни
+                    </button>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static "js/cities.js" %}"></script>
+{% endblock %}
