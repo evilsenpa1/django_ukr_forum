@@ -14,7 +14,7 @@ A Ukrainian community platform combining a marketplace with geolocation search, 
 
 **Production:** [ukrkolo.site](https://ukrkolo.site)
 
-> _Migrated from a private repository — pre-migration commit history is not preserved. Active development continues in this repo going forward._
+> _This is a public demo snapshot of the project, detached from the private development repository on April 1, 2026. Commit history prior to that date is not included._
 
 ---
 
@@ -29,6 +29,30 @@ A Ukrainian community platform combining a marketplace with geolocation search, 
 - **Custom middleware** — `LoginRequiredMiddleware` for site-wide auth enforcement; `VisitorTrackingMiddleware` for page view analytics
 - **Image uploads** — up to 10 images per product with server-side validation (size, dimensions, aspect ratio, file type)
 - **GDPR consent** — versioned consent texts with stored consent date per user
+
+---
+
+## Screenshots
+
+### 🏠 Product catalog
+Browse the latest listings with category filtering and Ukrainian locale support. Each card shows the price in UAH, location (city/region), and posting date.
+
+![Product catalog with multiple listings](./docs/screenshots/01-catalog.png)
+
+### 🔍 Geo-radius search
+Find products within a custom radius of any Ukrainian city using the Haversine formula. Filter by category, country, region, city, radius (10–100 km), sort order, and condition (new/used).
+
+![Geo-radius search with filters and radius dropdown](./docs/screenshots/02-geo-search.png)
+
+### 🛒 Product detail
+Detail page with multi-image gallery (up to 10 images per listing), price, location breadcrumb, and seller info. Contact details are revealed only on user action to reduce spam.
+
+![Product detail page with image gallery and seller block](./docs/screenshots/03-product-detail.png)
+
+### 🔒 Profile privacy controls
+Per-field visibility toggles — nickname, first name, last name, email, phone, and location can each be shown or hidden independently. Privacy preferences are stored on the user model and respected across all views and serializers.
+
+![Profile settings with per-field privacy toggles](./docs/screenshots/04-profile-privacy.png)
 
 ---
 
@@ -209,7 +233,31 @@ https://github.com/evilsenpa1
 
 **Production:** [ukrkolo.site](https://ukrkolo.site)
 
-> _Перенесено з приватного репозиторію — історія комітів до міграції не збережена. Подальша розробка ведеться тут._
+> _Це публічний демо-знімок проєкту, відокремлений від приватного репозиторію розробки 1 квітня 2026 року. Історія комітів до цієї дати не включена._
+
+---
+
+## Скриншоти
+
+### 🏠 Каталог товарів
+Перегляд останніх оголошень із фільтрацією за категоріями та українською локалізацією. Кожна картка показує ціну в UAH, локацію (місто/регіон) та дату публікації.
+
+![Каталог товарів з оголошеннями](./docs/screenshots/01-catalog.png)
+
+### 🔍 Пошук за радіусом
+Пошук товарів у заданому радіусі від будь-якого українського міста за формулою Гаверсинуса. Фільтрація за категорією, країною, регіоном, містом, радіусом (10–100 км), порядком сортування та станом (нове/вживане).
+
+![Пошук за радіусом з фільтрами та випадаючим списком радіуса](./docs/screenshots/02-geo-search.png)
+
+### 🛒 Сторінка товару
+Детальна сторінка з галереєю зображень (до 10 фото на оголошення), ціною, хлібними крихтами локації та блоком продавця. Контакти показуються лише за дією користувача — для захисту від спаму.
+
+![Сторінка товару з галереєю та блоком продавця](./docs/screenshots/03-product-detail.png)
+
+### 🔒 Налаштування приватності профілю
+Перемикачі видимості для кожного поля окремо — нікнейм, ім'я, прізвище, email, телефон та локація можна показати або приховати незалежно. Налаштування зберігаються в моделі користувача та враховуються у всіх в'юхах і серіалізаторах.
+
+![Налаштування профілю з перемикачами приватності для кожного поля](./docs/screenshots/04-profile-privacy.png)
 
 ---
 
